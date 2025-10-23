@@ -1,0 +1,14 @@
+# Ignore Airflow logs and temporary runtime files
+logs/
+airflow.cfg
+airflow.db
+__pycache__/
+.venv/
+.env
+
+# Ignore Docker and system files
+*.log
+*.pid
+*.db-journal
+*.tmp
+*.swp

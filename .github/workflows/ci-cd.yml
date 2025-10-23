@@ -1,0 +1,41 @@
+name: CI/CD for Sales ETL DataOps
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Unit Tests
+        run: |
+          echo "✅ Running ETL pipeline test"
+          python main.py
+
+      - name: Build Docker Image
+        run: |
+          docker build -t sales-etl-dataops:latest .
+
+      - name: Push to DockerHub (optional)
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker tag sales-etl-dataops:latest $DOCKER_USERNAME/sales-etl-dataops:latest
+          docker push $DOCKER_USERNAME/sales-etl-dataops:latest
