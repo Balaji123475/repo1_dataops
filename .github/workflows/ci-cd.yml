@@ -37,9 +37,9 @@ jobs:
       - name: Login to Docker Hub and push image
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          # Push both tags
+          docker tag sales-etl-dataops:latest $DOCKER_USERNAME/sales-etl-dataops:latest
           docker push $DOCKER_USERNAME/sales-etl-dataops:latest
-          docker push $DOCKER_USERNAME/sales-etl-dataops:$COMMIT_SHA
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
