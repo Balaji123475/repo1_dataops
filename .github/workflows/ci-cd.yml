@@ -29,11 +29,17 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t sales-etl-dataops:latest .
+          # Tag image with both 'latest' and Git commit SHA
+          IMAGE_TAG=latest
+          COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
+          docker build -t sales-etl-dataops:$IMAGE_TAG -t sales-etl-dataops:$COMMIT_SHA .
 
       - name: Login to Docker Hub and push image
         run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker tag sales-etl-dataops:latest ${{ secrets.DOCKER_USERNAME }}/sales-etl-dataops:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/sales-etl-dataops:latest
-
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          # Push both tags
+          docker push $DOCKER_USERNAME/sales-etl-dataops:latest
+          docker push $DOCKER_USERNAME/sales-etl-dataops:$COMMIT_SHA
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
