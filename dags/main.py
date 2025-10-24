@@ -11,6 +11,5 @@ with DAG(
 
     run_etl = BashOperator(
         task_id="run_etl_pipeline",
-        bash_command="python /opt/airflow/main.py"
+        bash_command="docker run your-dockerhub-username/sales-etl-dataops:latest"
     )
-bash_command="docker run your-dockerhub-username/sales-etl-dataops:latest"
